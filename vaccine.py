@@ -32,6 +32,7 @@ def findAVaccine():
         for item in payload["responsePayloadData"]["data"][state]:
             mappings[item.get('city')] = item.get('status')
 
+        print(time.ctime())
         cities = ['STERLING', 'RESTON', 'LEESBURG', 'HERNDON'] ###Update with your cities nearby
         for city in cities:
             print(city, mappings[city])
