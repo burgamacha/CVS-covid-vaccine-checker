@@ -23,7 +23,7 @@ def findAVaccine():
     max_time = time.time() + hours_to_run*60*60
     while time.time() < max_time:
 
-        state = 'VA' ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
+        state = 'IL' ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
 
         response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo".format(state.lower()), headers={"Referer":"https://www.cvs.com/immunizations/covid-19-vaccine"})
         payload = response.json()
@@ -33,7 +33,7 @@ def findAVaccine():
             mappings[item.get('city')] = item.get('status')
 
         print(time.ctime())
-        cities = ['STERLING', 'RESTON', 'LEESBURG', 'HERNDON'] ###Update with your cities nearby
+        cities = ['BELLEVILLE', 'CHICAGO', 'DEKALB', 'WAUKEGAN'] ###Update with your cities nearby
         for city in cities:
             print(city, mappings[city])
 
