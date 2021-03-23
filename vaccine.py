@@ -25,7 +25,7 @@ def findAVaccine():
 
         state = 'VA' ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
 
-        response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status."+ state.lower() + ".json?vaccineinfo", headers={"Referer":"https://www.cvs.com/immunizations/covid-19-vaccine"})
+        response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo".format(state.lower()), headers={"Referer":"https://www.cvs.com/immunizations/covid-19-vaccine"})
         payload = response.json()
 
         mappings = {}
