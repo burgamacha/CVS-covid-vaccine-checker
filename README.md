@@ -10,7 +10,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![MIT License][license-shield]][license-url]
-
+[![MIT License][blog-shield]][blog-url]
 <!-- ABOUT THE PROJECT -->
 ## About The CVS Vaccine Checker
 
@@ -46,3 +46,5 @@ Contributions are what make the open source community such an amazing place to b
 [stars-url]: https://github.com/burgamacha/CVS-vaccine-checker/stargazers
 [license-shield]: https://img.shields.io/github/license/burgamacha/CVS-vaccine-checker.svg?style=for-the-badge
 [license-url]: https://github.com/burgamacha/CVS-vaccine-checker/blob/master/LICENSE.txt
+[blog-shield]: https://img.shields.io/badge/medium-Read%20about%20this%20on%20Medium-lightgrey.svg?style=for-the-badge
+[blog-url]: https://python.plainenglish.io/how-i-built-a-cvs-vaccine-appointment-availability-checker-in-python-6beb379549e4
