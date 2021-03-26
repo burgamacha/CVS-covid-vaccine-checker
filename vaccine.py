@@ -14,9 +14,11 @@ in your terminal.
 import requests
 import time
 
-
-# import beepy
-
+HAS_SOUND = True
+try:
+    import beepy
+except ImportError:
+    HAS_SOUND = False
 
 def findAVaccine():
     hours_to_run = 3  ###Update this to set the number of hours you want the script to run.
@@ -36,7 +38,8 @@ def findAVaccine():
             mappings[item.get('city').lower()] = item.get('status')
 
         print(time.ctime())
-        cities = [c.lower() for c in ["San Francisco", "Berkeley", "Oakland", "Emeryville",
+        cities = [c.lower() for c in ["San Francisco", "Berkeley", "Oakland",
+                                      "Emeryville",
                                       "San Leandro", "San Rafael", "Mill Valley", "San Mateo",
                                       "Redwood City", "Daly City", "Walnut Creek", "San Ramon",
                                       "Fremont", "Vallejo", "Richmond", "Martinez", "Concord",
@@ -50,9 +53,13 @@ def findAVaccine():
                 print(f">>> Missing: {city}")
             else:
                 if mappings[city] != 'Fully Booked':
+                    if HAS_SOUND:
+                        beepy.beep(sound='coin')
                     print(f"****************  {city}")
                     found = True
         if not found:
+            if HAS_SOUND:
+                beepy.beep(sound='error')
             print("Nothing available :(")
             count = 0
             for city, status in mappings.items():
