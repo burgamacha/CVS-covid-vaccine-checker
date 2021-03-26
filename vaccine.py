@@ -11,40 +11,58 @@ pip install beepy
 in your terminal.
 '''
 
-
-
 import requests
 import time
-import beepy
+
+
+# import beepy
 
 
 def findAVaccine():
-    hours_to_run = 3 ###Update this to set the number of hours you want the script to run.
-    max_time = time.time() + hours_to_run*60*60
+    hours_to_run = 3  ###Update this to set the number of hours you want the script to run.
+    max_time = time.time() + hours_to_run * 60 * 60
     while time.time() < max_time:
 
-        state = 'IL' ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
+        state = 'CA'  ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
 
-        response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo".format(state.lower()), headers={"Referer":"https://www.cvs.com/immunizations/covid-19-vaccine"})
+        response = requests.get(
+            "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo".format(
+                state.lower()),
+            headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
         payload = response.json()
 
         mappings = {}
         for item in payload["responsePayloadData"]["data"][state]:
-            mappings[item.get('city')] = item.get('status')
+            mappings[item.get('city').lower()] = item.get('status')
 
         print(time.ctime())
-        cities = ['BELLEVILLE', 'CHICAGO', 'DEKALB', 'WAUKEGAN'] ###Update with your cities nearby
+        cities = [c.lower() for c in ["San Francisco", "Berkeley", "Oakland", "Emeryville",
+                                      "San Leandro", "San Rafael", "Mill Valley", "San Mateo",
+                                      "Redwood City", "Daly City", "Walnut Creek", "San Ramon",
+                                      "Fremont", "Vallejo", "Richmond", "Martinez", "Concord",
+                                      "Danville", "Hayward", "Union City", "San Jose", "Milpitas",
+                                      "Cupertino", "Palo Alto", "Alameda", "Dublin", "Pleasanton", "Los Gatos"]]
+
+        found = False
+        print(time.ctime())
         for city in cities:
-            print(city, mappings[city])
-
-        for key in mappings.keys():
-            if (key in cities) and (mappings[key] != 'Fully Booked'):
-                beepy.beep(sound = 'coin')
-                break
+            if city not in mappings:
+                print(f">>> Missing: {city}")
             else:
-                pass
+                if mappings[city] != 'Fully Booked':
+                    print(f"****************  {city}")
+                    found = True
+        if not found:
+            print("Nothing available :(")
+            count = 0
+            for city, status in mappings.items():
+                if status != 'Fully Booked':
+                    count += 1
+            print(f"Available elsewhere: {count}")
 
-        time.sleep(60) ##This runs every 60 seconds. Update here if you'd like it to go every 10min (600sec)
-        print('\n')
+        time.sleep(600)
+        print('----------- \n')
 
-findAVaccine() ###this final line runs the function. Your terminal will output the cities every 60seconds
+
+if __name__ == "__main__":
+    findAVaccine()
