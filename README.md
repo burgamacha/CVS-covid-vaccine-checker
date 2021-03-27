@@ -24,7 +24,46 @@ Once you've updated the script with your state and cities, navigate your command
 
 ## Usage
 
-This script is for monitoring the appointment website without clicking refresh 1Billion times. It is not going to automatically book for you. And if you fork this and create an automated booking applet, I will personally send 1000 adolscent, chewing puppies to your house. And nobody wants that.  Speaking of contributing...
+This script is for monitoring the appointment website without clicking refresh 1Billion times. It is not going to automatically book for you. And if you fork this and create an automated booking applet, I will personally send 1000 adolscent, chewing puppies to your house. And nobody wants that.  
+
+### Google Maps API
+
+To run the automated geolocation mapping, this script requires the use of the [`googlemaps` Python library][googlemaps], and a Google Maps API Key.
+
+Google API Keys are described [here][api_keys] while the documentation for the `googlemaps` API is [here][googlemaps_docs], but all you need for your purposes is:
+
+    pip install googlemaps
+
+Once you have the API Key, you will need to make it available to the script via an environment variable:
+
+    export GOOGLEMAPS_API_KEY = "AKzbSy...hi899"
+
+### Running
+
+With this, you can run the script as follows:
+
+```shell
+$ ./vaccine.py Oakland,CA
+
+Running Vaccine appointment check for 3 hours, every 10 minutes
+Looking for available locations within 100 miles of Oakland, CA
+Fri Mar 26 18:22:23 2021
+Nothing available at this time, there are 12 other locations with available appointments
+----------- 
+...
+```
+
+or:
+
+```shell
+$ ./vaccine.py --duration 1 --interval 5 --distance 20 Oakland,CA
+
+Running Vaccine appointment check for 1 hours, every 5 minutes
+Looking for available locations within 20 miles of Oakland, CA
+Fri Mar 26 18:36:33 2021
+Nothing available at this time, there are 12 other locations with available appointments
+```
+
 
 ## Contributing
 
@@ -48,3 +87,6 @@ Contributions are what make the open source community such an amazing place to b
 [license-url]: https://github.com/burgamacha/CVS-vaccine-checker/blob/master/LICENSE.txt
 [blog-shield]: https://img.shields.io/badge/medium-Read%20about%20this%20on%20Medium-lightgrey.svg?style=for-the-badge
 [blog-url]: https://python.plainenglish.io/how-i-built-a-cvs-vaccine-appointment-availability-checker-in-python-6beb379549e4
+[googlemaps]: https://github.com/googlemaps/google-maps-services-python
+[api_keys]: https://cloud.google.com/docs/authentication/api-keys
+[googlemaps_docs]: https://googlemaps.github.io/google-maps-services-python/docs/index.html
