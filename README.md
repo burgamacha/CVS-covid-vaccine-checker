@@ -9,8 +9,7 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
-[![MIT License][license-shield]][license-url]
-[![MIT License][blog-shield]][blog-url]
+[![Blog][blog-shield]][blog-url]
 <!-- ABOUT THE PROJECT -->
 ## About The CVS Vaccine Checker
 
