@@ -44,7 +44,5 @@ Contributions are what make the open source community such an amazing place to b
 [forks-url]: https://github.com/burgamacha/CVS-vaccine-checker/network/members
 [stars-shield]: https://img.shields.io/github/stars/burgamacha/CVS-vaccine-checker.svg?style=for-the-badge
 [stars-url]: https://github.com/burgamacha/CVS-vaccine-checker/stargazers
-[license-shield]: https://img.shields.io/github/license/burgamacha/CVS-vaccine-checker.svg?style=for-the-badge
-[license-url]: https://github.com/burgamacha/CVS-vaccine-checker/blob/master/LICENSE.txt
 [blog-shield]: https://img.shields.io/badge/medium-Read%20about%20this%20on%20Medium-lightgrey.svg?style=for-the-badge
 [blog-url]: https://python.plainenglish.io/how-i-built-a-cvs-vaccine-appointment-availability-checker-in-python-6beb379549e4
