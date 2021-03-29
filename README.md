@@ -17,13 +17,13 @@ This script checks for covid-19 vaccines near you.
 
 To run it, you'll need python 3.x installed on your computer, along with the packages requests, beepy, and time. See here for how to install those from code academy: https://www.codecademy.com/articles/install-python
 
-Once you have those, save the script in a folder on your desktop. You'll need to open the script and do some very easy editing that I've marked out using `###`. There are instructions at the top for you too :) This should be easy enough for someone comfortable with technology. Ask for help on NextDoor - it's where I answer a lot of tech questions for my neighbors!
+Once you have those, save the script in a folder on your desktop. You'll need to open the script and do some very easy editing that I've marked out using `###`. There are instructions at the top for you too :) This should be easy enough for someone comfortable with technology. Ask for help on NextDoor or Reddit - it's where I answer a lot of tech questions for my neighbors!
 
-Once you've updated the script with your state and cities, navigate your command line from the tutorial above to that folder, and type `python3 vaccine.py`. Like magic, it will run!
+Once you've updated the script with your state and cities, navigate your command line from the tutorial above to that folder, and type `python3 vaccine.py`.
 
 ## Usage
 
-This script is for monitoring the appointment website without clicking refresh 1Billion times. It is not going to automatically book for you. And if you fork this and create an automated booking applet, I will personally send 1000 adolscent, chewing puppies to your house. And nobody wants that.  Speaking of contributing...
+This script is for monitoring the appointment website without clicking refresh 1Billion times. It is not going to automatically book for you. And if you fork this and create an automated booking applet, I will personally send 1000 adolscent, chewing puppies to your house. And nobody wants that. Speaking of contributing...
 
 ## Contributing
 
