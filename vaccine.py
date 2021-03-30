@@ -1,50 +1,84 @@
-'''
-This is a python script that requires you have python installed, or in a cloud environment.
+#!/usr/bin/env python3
+"""
+Find vaccine appointments at CVS in specific cities.
 
-This script scrapes the CVS website looking for vaccine appointments in the cities you list.
-To update for your area, update the locations marked with ### below.
+This script scrapes the CVS website looking for vaccine appointments in the
+cities you specify.
 
-If you receive an error that says something is not install, type
+:author: Bryce Macher
+:author: Nitin Madnani
+:date: March 2021
+"""
 
-pip install beepy
-
-in your terminal.
-'''
-
-
-
-import requests
+import argparse
 import time
+
 import beepy
+import requests
+
+CVS_URL = "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
+REFERER_URL = "https://www.cvs.com/immunizations/covid-19-vaccine"
 
 
-def findAVaccine():
-    hours_to_run = 3 ###Update this to set the number of hours you want the script to run.
-    max_time = time.time() + hours_to_run*60*60
+def main():  # noqa: D103
+
+    # set up an argument parser
+    parser = argparse.ArgumentParser(prog='vaccine.py')
+    parser.add_argument("--total",
+                        dest="total_hours",
+                        help="Total Number of hours for which to run the script",
+                        default=3)
+    parser.add_argument("--refresh",
+                        dest="refresh_minutes",
+                        help="Number of minutes after which to refresh results",
+                        default=1)
+    parser.add_argument("--state",
+                        help="State to search, e.g., NJ",
+                        required=True)
+    parser.add_argument("--cities",
+                        nargs='+',
+                        help="Full names of cities to search, separated by whitespace",
+                        required=True)
+
+    # parse given command line arguments
+    args = parser.parse_args()
+
+    max_time = time.time() + args.total_hours * 60 * 60
+    state_url = CVS_URL.format(args.state.lower())
+    chosen_cities = [city.upper() for city in args.cities]
+
+    # run for `args.total` hours or until Ctrl-C is pressed
     while time.time() < max_time:
 
-        state = 'IL' ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
+        try:
+            # get the latest response from CVS website
+            response = requests.get(state_url, headers={"Referer": REFERER_URL})
+            payload = response.json()
 
-        response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo".format(state.lower()), headers={"Referer":"https://www.cvs.com/immunizations/covid-19-vaccine"})
-        payload = response.json()
+            # save the status for the chosen cities in a dictionary
+            statusdict = {}
+            for item in payload["responsePayloadData"]["data"][args.state]:
+                city, status = item['city'], item['status']
+                if city in chosen_cities:
+                    statusdict[city] = status
 
-        mappings = {}
-        for item in payload["responsePayloadData"]["data"][state]:
-            mappings[item.get('city')] = item.get('status')
+            # print out the values in the dictionary and make a sound to alert
+            # the user if any of the chosen cities have appointments available
+            print(time.ctime())
+            for city, status in statusdict.items():
+                print(city, status)
+                if status != 'Fully Booked':
+                    beepy.beep(sound='coin')
+                    break
 
-        print(time.ctime())
-        cities = ['BELLEVILLE', 'CHICAGO', 'DEKALB', 'WAUKEGAN'] ###Update with your cities nearby
-        for city in cities:
-            print(city, mappings[city])
+            # sleep for the given number of minutes
+            # before refreshing again
+            time.sleep(args.refresh_minutes * 60)
+            print()
+        except KeyboardInterrupt:
+            print('Exiting ...')
+            break
 
-        for key in mappings.keys():
-            if (key in cities) and (mappings[key] != 'Fully Booked'):
-                beepy.beep(sound = 'coin')
-                break
-            else:
-                pass
 
-        time.sleep(60) ##This runs every 60 seconds. Update here if you'd like it to go every 10min (600sec)
-        print('\n')
-
-findAVaccine() ###this final line runs the function. Your terminal will output the cities every 60seconds
+if __name__ == '__main__':
+    main()
