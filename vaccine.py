@@ -43,7 +43,7 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
 
             print(time.ctime())
             for city in cities:
-                print(city + ":", mappings[city])
+                print(city + ":", mappings[city.upper()])
 
             for key in mappings.keys():
                 if (key in cities) and (mappings[key] != 'Fully Booked'):
@@ -58,5 +58,5 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
-find_a_vaccine(3, 60, 'ny', ['Rye', 'White Plains'])
+find_a_vaccine(3, 60, 'ny', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'])
 
