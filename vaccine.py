@@ -15,7 +15,11 @@ in your terminal.
 from typing import List
 import requests
 import time
+import os
 import beepy
+from discord import Webhook, RequestsWebhookAdapter
+
+url = os.getenv('webhook')
 
 
 def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: List[str] = ['Chicago']):
@@ -31,7 +35,7 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
         return
     else:
         max_time = time.time() + hours_to_run*60*60
-        while time.time() < max_time:
+        while time.time() < max_time:  # change to True to run indefinitely after deployed with Flask
 
             response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
                                     .format(state.upper()), headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
@@ -48,6 +52,8 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
             for key in mappings.keys():
                 if (key in cities) and (mappings[key] != 'Fully Booked'):
                     beepy.beep(sound='coin')
+                    webhook = Webhook.from_url(url, adapter=RequestsWebhookAdapter())
+                    webhook.send(key + " has an opening!")
                     break
                 else:
                     pass
@@ -58,5 +64,5 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
-find_a_vaccine(3, 60, 'ny', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'])
+find_a_vaccine(3, 60, 'ny', ['Cortland', 'Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'])
 
