@@ -12,12 +12,13 @@ in your terminal.
 """
 
 
+from typing import List
 import requests
 import time
 import beepy
 
 
-def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: list[str] = ['Chicago']):
+def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: List[str] = ['Chicago']):
     state = state.upper()
     states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
               "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
