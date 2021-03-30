@@ -54,7 +54,8 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
             time.sleep(refresh)
             print('\n')
 
+
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
-find_a_vaccine()
+find_a_vaccine(3, 60, 'ny', ['Rye', 'White Plains'])
 
