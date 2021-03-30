@@ -22,10 +22,10 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
     states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
               "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
               "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-    if (state not in states) or (state.length() != 2):
+    if (state not in states) or (len(state) != 2):
         print("Please enter a valid state abbreviation.")
         return
-    elif cities.length < 1:
+    elif len(cities) < 1:
         print("Please enter at least one city.")
         return
     else:
@@ -33,7 +33,7 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
         while time.time() < max_time:
 
             response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
-                                    .format(state.lower()), headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
+                                    .format(state.upper()), headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
             payload = response.json()
 
             mappings = {}
@@ -42,7 +42,7 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
 
             print(time.ctime())
             for city in cities:
-                print(city, mappings[city])
+                print(city + ":", mappings[city])
 
             for key in mappings.keys():
                 if (key in cities) and (mappings[key] != 'Fully Booked'):
