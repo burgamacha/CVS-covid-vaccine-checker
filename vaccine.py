@@ -43,7 +43,7 @@ def keep_alive():
 
 
 def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 60, state: str = 'IL',
-                   cities: List[str] = ['Chicago']):
+                   cities: List[str] = ['Chicago'], user_id=None):
     state = state.upper()
     states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
               "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
@@ -74,7 +74,7 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
                 for key in mappings.keys():
                     if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
                         webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
-                        webhook.send("Hey {}, {} has an opening!".format(environ['user_id'], key.capitalize()))
+                        webhook.send("Hey {}, {} has an opening!".format(user_id, key.capitalize()))
                         break
                     else:
                         pass
@@ -114,7 +114,7 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
 a = sys.argv
 n = len(a)
 if n > 1:
-    c = a[5:n]
+    c = a[5:n-1]
     find_a_vaccine(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4], c)
 else:
     find_a_vaccine()
