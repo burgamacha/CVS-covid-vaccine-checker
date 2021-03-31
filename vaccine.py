@@ -42,8 +42,8 @@ def keep_alive():
     server.start()
 
 
-def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: List[str] = ['Chicago'],
-                   discord: bool = False):
+def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 60, state: str = 'IL',
+                   cities: List[str] = ['Chicago']):
     state = state.upper()
     states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
               "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
@@ -90,5 +90,8 @@ keep_alive()
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
-# find_a_vaccine(3, 60, 'NY', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'], True)
-find_a_vaccine(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+# find_a_vaccine(True, 3, 60, 'NY', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'])
+a = sys.argv
+n = len(a)
+c = a[5:n]
+find_a_vaccine(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], c)
