@@ -82,7 +82,7 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
                     pass
 
             time.sleep(refresh)
-            print('\n')
+            print('Checking the internets.\n')
 
 
 # this will run Flask and let UptimeRobot keep the webhooks going
