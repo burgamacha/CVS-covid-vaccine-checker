@@ -16,6 +16,7 @@ To use with a Discord webhook, save the webhook in your .env as webhook="<your u
 
 from typing import List
 from os import environ
+import sys
 import requests
 import time
 import beepy
@@ -89,5 +90,5 @@ keep_alive()
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
-find_a_vaccine(3, 60, 'NY', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'], True)
-
+# find_a_vaccine(3, 60, 'NY', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'], True)
+find_a_vaccine(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
