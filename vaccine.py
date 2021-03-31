@@ -56,6 +56,8 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
         return
     else:
         if discord:
+            # this will run Flask and let UptimeRobot keep the webhooks going
+            keep_alive()
             while True:
                 response = requests.get(
                     "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
@@ -81,7 +83,7 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
                 print('\n')
         else:
             max_time = time.time() + hours_to_run*60*60
-            while time.time() < max_time:  # change to True to run indefinitely after deployed with Flask
+            while time.time() < max_time:
 
                 response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
                                         .format(state.upper()), headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
@@ -105,9 +107,6 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
                 time.sleep(refresh)
                 print('\n')
 
-
-# this will run Flask and let UptimeRobot keep the webhooks going
-keep_alive()
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
