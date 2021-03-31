@@ -15,11 +15,9 @@ in your terminal.
 from typing import List
 import requests
 import time
-import os
+from os import environ
 import beepy
 from discord import Webhook, RequestsWebhookAdapter
-
-url = os.getenv('webhook')
 
 
 def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: List[str] = ['Chicago']):
@@ -50,10 +48,10 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
                 print(city + ":", mappings[city.upper()])
 
             for key in mappings.keys():
-                if (key in cities) and (mappings[key] != 'Fully Booked'):
+                if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
                     beepy.beep(sound='coin')
-                    webhook = Webhook.from_url(url, adapter=RequestsWebhookAdapter())
-                    webhook.send(key + " has an opening!")
+                    webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
+                    webhook.send(key.capitalize() + " has an opening!")
                     break
                 else:
                     pass
