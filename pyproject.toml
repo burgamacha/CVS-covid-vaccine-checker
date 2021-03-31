@@ -9,6 +9,8 @@ license = "Apache-2.0"
 python = "^3.9"
 requests = "^2.25.1"
 beepy = "^1.0.7"
+discord = "^1.0.1"
+flask = "^1.1.2"
 
 [tool.poetry.dev-dependencies]
 
