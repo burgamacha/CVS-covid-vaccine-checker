@@ -66,9 +66,11 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
             for item in payload["responsePayloadData"]["data"][state]:
                 mappings[item.get('city')] = item.get('status')
 
+            print('Checking the internets.')
             print(time.ctime())
-            for city in cities:
-                print(city + ":", mappings[city.upper()])
+            if discord is False:
+                for city in cities:
+                    print(city + ":", mappings[city.upper()])
 
             for key in mappings.keys():
                 if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
