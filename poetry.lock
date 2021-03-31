@@ -237,8 +237,8 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "6e54ff12053fb522518e9d795ac0170dd0e46415b9b7109244e8eb5c567498f4"
-python-versions = "^3.9"
+content-hash = "2889f76ea32fd8b7d8c42ae58b604c193f83fb8e38e99289bd9c5954110d6ce1"
+python-versions = "^3.8"
 
 [metadata.files]
 aiohttp = [

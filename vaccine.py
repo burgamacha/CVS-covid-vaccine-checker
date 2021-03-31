@@ -110,11 +110,10 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
-# find_a_vaccine(True,3,60,'NY',['Elmsford','Harrison','Larchmont','Mamaroneck','Rye','Rye Brook','White Plains'])
 a = sys.argv
 n = len(a)
 if n > 1:
-    c = a[5:n-1]
-    find_a_vaccine(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4], c)
+    c = a[5].split(', ')
+    find_a_vaccine(a[1], int(a[2]), int(a[3]), a[4], c, a[6])
 else:
     find_a_vaccine()

@@ -1,2 +1,2 @@
 language = "python"
-run = "bash main.sh"
+run = "python vaccine.py True 3 600 NY 'Elmsford, Harrison, Larchmont, Mamaroneck, Rye, Rye Brook, White Plains' '<@!524382927207792653>'"
