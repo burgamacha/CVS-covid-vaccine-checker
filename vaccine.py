@@ -16,8 +16,27 @@ from typing import List
 import requests
 import time
 from os import environ
-import beepy
+# import beepy
 from discord import Webhook, RequestsWebhookAdapter
+from flask import Flask
+from threading import Thread
+
+# code to keep got awake when being web-hosted on Repl.it
+app = Flask('')
+
+
+@app.route('/')
+def main():
+    return "Your Bot Is Ready"
+
+
+def run():
+    app.run(host="0.0.0.0", port=8000)
+
+
+def keep_alive():
+    server = Thread(target=run)
+    server.start()
 
 
 def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: List[str] = ['Chicago']):
@@ -49,7 +68,7 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
 
             for key in mappings.keys():
                 if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
-                    beepy.beep(sound='coin')
+                    # beepy.beep(sound='coin')  # repl won't run the script since it doesn't have the sound files
                     webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
                     webhook.send(key.capitalize() + " has an opening!")
                     break
@@ -59,6 +78,9 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
             time.sleep(refresh)
             print('\n')
 
+
+# this will run Flask and let UptimeRobot keep the webhooks going
+keep_alive()
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
