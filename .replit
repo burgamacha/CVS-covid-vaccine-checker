@@ -1,2 +1,2 @@
-language = 'bash'
-run = 'bash main.sh'
+language = "bash"
+run = "bash main.sh"
