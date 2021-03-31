@@ -9,14 +9,16 @@ If you receive an error that says something is not install, type
 pip install beepy
 
 in your terminal.
+
+To use with a Discord webhook, save the webhook in your .env as webhook="<your url here>"
 """
 
 
 from typing import List
+from os import environ
 import requests
 import time
-from os import environ
-# import beepy
+import beepy
 from discord import Webhook, RequestsWebhookAdapter
 from flask import Flask
 from threading import Thread
@@ -27,7 +29,7 @@ app = Flask('')
 
 @app.route('/')
 def main():
-    return "Your Bot Is Ready"
+    return "Your webhook is ready"
 
 
 def run():
@@ -39,7 +41,8 @@ def keep_alive():
     server.start()
 
 
-def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: List[str] = ['Chicago']):
+def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', cities: List[str] = ['Chicago'],
+                   discord: bool = False):
     state = state.upper()
     states = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY",
               "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
@@ -68,9 +71,11 @@ def find_a_vaccine(hours_to_run: int = 3, refresh: int = 60, state: str = 'IL', 
 
             for key in mappings.keys():
                 if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
-                    # beepy.beep(sound='coin')  # repl won't run the script since it doesn't have the sound files
-                    webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
-                    webhook.send(key.capitalize() + " has an opening!")
+                    if discord:
+                        webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
+                        webhook.send(key.capitalize() + " has an opening!")
+                    else:
+                        beepy.beep(sound='coin')
                     break
                 else:
                     pass
@@ -84,5 +89,5 @@ keep_alive()
 
 # this final line runs the function
 # your terminal will output the Chicago, IL every 60 seconds for 3 hours by default if no arguments are passed
-find_a_vaccine(3, 60, 'ny', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'])
+find_a_vaccine(3, 60, 'NY', ['Elmsford', 'Harrison', 'Larchmont', 'Mamaroneck', 'Rye', 'Rye Brook', 'White Plains'], True)
 
