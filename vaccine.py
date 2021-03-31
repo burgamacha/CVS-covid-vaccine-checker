@@ -55,36 +55,55 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
         print("Please enter at least one city.")
         return
     else:
-        max_time = time.time() + hours_to_run*60*60
-        while time.time() < max_time:  # change to True to run indefinitely after deployed with Flask
+        if discord:
+            while True:
+                response = requests.get(
+                    "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
+                    .format(state.upper()), headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
+                payload = response.json()
 
-            response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
-                                    .format(state.upper()), headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
-            payload = response.json()
+                mappings = {}
+                for item in payload["responsePayloadData"]["data"][state]:
+                    mappings[item.get('city')] = item.get('status')
 
-            mappings = {}
-            for item in payload["responsePayloadData"]["data"][state]:
-                mappings[item.get('city')] = item.get('status')
+                print('Checking the internets.')
+                print(time.ctime())
 
-            print('Checking the internets.')
-            print(time.ctime())
-            if discord is False:
+                for key in mappings.keys():
+                    if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
+                        webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
+                        webhook.send(key.capitalize() + " has an opening!")
+                        break
+                    else:
+                        pass
+
+                time.sleep(refresh)
+                print('\n')
+        else:
+            max_time = time.time() + hours_to_run*60*60
+            while time.time() < max_time:  # change to True to run indefinitely after deployed with Flask
+
+                response = requests.get("https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
+                                        .format(state.upper()), headers={"Referer": "https://www.cvs.com/immunizations/covid-19-vaccine"})
+                payload = response.json()
+
+                mappings = {}
+                for item in payload["responsePayloadData"]["data"][state]:
+                    mappings[item.get('city')] = item.get('status')
+
+                print(time.ctime())
                 for city in cities:
                     print(city + ":", mappings[city.upper()])
 
-            for key in mappings.keys():
-                if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
-                    if discord:
-                        webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
-                        webhook.send(key.capitalize() + " has an opening!")
-                    else:
+                for key in mappings.keys():
+                    if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
                         beepy.beep(sound='coin')
-                    break
-                else:
-                    pass
+                        break
+                    else:
+                        pass
 
-            time.sleep(refresh)
-            print('\n')
+                time.sleep(refresh)
+                print('\n')
 
 
 # this will run Flask and let UptimeRobot keep the webhooks going
