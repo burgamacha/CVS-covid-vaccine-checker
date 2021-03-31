@@ -74,7 +74,7 @@ def find_a_vaccine(discord: bool = False, hours_to_run: int = 3, refresh: int = 
                 for key in mappings.keys():
                     if (key.capitalize() in cities) and (mappings[key] != 'Fully Booked'):
                         webhook = Webhook.from_url(environ['webhook'], adapter=RequestsWebhookAdapter())
-                        webhook.send(key.capitalize() + " has an opening!")
+                        webhook.send("Hey {}, {} has an opening!".format(environ['user_id'], key.capitalize()))
                         break
                     else:
                         pass
