@@ -95,6 +95,6 @@ a = sys.argv
 n = len(a)
 if n > 1:
     c = a[5:n]
-    find_a_vaccine(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], c)
+    find_a_vaccine(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), sys.argv[4], c)
 else:
     find_a_vaccine()
