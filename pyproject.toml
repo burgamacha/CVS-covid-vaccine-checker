@@ -1,0 +1,18 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+
+[tool]
+[tool.poetry]
+authors = ["Your Name <you@example.com>"]
+description = ""
+license = "Apache-2.0"
+name = "cvs-covid-vaccine-checker"
+version = "0.1.0"
+[tool.poetry.dependencies]
+beepy = "^1.0.7"
+discord = "^1.0.1"
+flask = "^1.1.2"
+python = "^3.8"
+requests = "^2.25.1"
+[tool.poetry.dev-dependencies]
