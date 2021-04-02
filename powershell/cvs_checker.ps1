@@ -43,9 +43,6 @@ do {
         }
 
     write-output "`nChecking until $($stopat.ToShortTimeString()) - availability as of $($loopstarttime.ToShortTimeString()):" | Tee-Object -FilePath $runlog -Append
-
-
-    $eligiblecities = (compare-object $availabilitylist.city $allLocalities.cities.city.name -excludedifferent -includeequal).inputobject
     
     foreach ( $city in $availabilitylist ) {
         if ( $eligiblecities -contains $city.city ) {
