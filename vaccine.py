@@ -26,11 +26,13 @@ def main():  # noqa: D103
     parser = argparse.ArgumentParser(prog='vaccine.py')
     parser.add_argument("--total",
                         dest="total_hours",
+                        type=int,
                         help="Total Number of hours for which to run the script",
                         default=3)
     parser.add_argument("--refresh",
                         dest="refresh_minutes",
                         help="Number of minutes after which to refresh results",
+                        type=int,
                         default=1)
     parser.add_argument("--state",
                         help="State to search, e.g., NJ",
