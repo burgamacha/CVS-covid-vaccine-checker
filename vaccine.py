@@ -32,7 +32,10 @@ def send(message, state):
     password = 'PASSWORD'
     subject = f"CVS Availability in {state}"
     # Append link
-    message.append('https://www.cvs.com/vaccine/intake/store/covid-screener/covid-qns')
+    if len(message) == 1:
+        message.append('No new appointments available.')
+    else:
+        message.append('https://www.cvs.com/vaccine/intake/store/covid-screener/covid-qns')
 
     port = 587 # 587 for starttls, 465 for SSL and use ssl
     smtp_server = "smtp.gmail.com"
