@@ -76,8 +76,8 @@ def findAVaccine():
             status = item.get('status')
 
             if (city in cities) and (status != 'Fully Booked'):
-                message.append(city + ', ' + state + ' -- ' + status)
-                print(city + ',',state,'--',status)
+                message.append(f"{city}, {state} -- {status}")
+                print(f"{city}, {state} -- {status}")
 
         print('\n')
         send(message, state)
