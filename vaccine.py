@@ -2,22 +2,23 @@
 This is a python script that requires you have python installed, or in a cloud environment.
 
 This script scrapes the CVS website looking for vaccine appointments in the cities you list.
-To update for your area, update the locations marked with ### below.
+To update for your area, update the locations commented below.
 
-If you receive an error that says something is not install, type
+If you receive an error that says something is not installed, type
 
 pip install requests
+etc.
 
-in your terminal.
+Happy vaccination!
 '''
 import requests
 import time
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import email.utils
+from datetime import datetime, timedelta
 
-def send(message, state):
+def send(message, thetime, state):
     carriers = {
         'att':      '@mms.att.net',
         'tmobile':  '@tmomail.net',
@@ -25,13 +26,17 @@ def send(message, state):
         'sprint':   '@page.nextel.com',
         'gmail':    '@gmail.com'
     }
-    # Replace the receivernumber, sender, and password with your own, and consider using an argument\dict for multiple senders.
-    # To use gmail, you need to allow less security apps to connect
+    # Replace the receivernumber, senderaddr, and senderpass with your own
+    # Consider using a list for multiple recievers.
+    # To use gmail, you need to allow less secure apps to connect
+    # Also, probably a good idea to set up a burner gmail for the sending
     to_number = f"RECEIVERNUMBER{carriers['tmobile']}" # ", ".join() for multiple
-    sender = 'SENDER' 
-    password = 'PASSWORD'
+    sender = f"SENDERADDR{carriers['gmail']}" 
+    password = 'SENDERPASS'
     subject = f"CVS Availability in {state}"
-    # Append link
+    # prepend thetime
+    message.insert(0, thetime.strftime("%m/%d/%Y, %H:%M %p"))
+    # append the link
     if len(message) == 1:
         message.append('No new appointments available.')
     else:
@@ -57,35 +62,63 @@ def send(message, state):
     server.quit()
 
 def findAVaccine():
+    timer = 3600
+    init_time = datetime.now()
     hours_to_run = 3 ###Update this to set the number of hours you want the script to run.
-    max_time = time.time() + hours_to_run*60*60
-    while time.time() < max_time:
+    max_time = init_time + timedelta(hours=hours_to_run)
 
-        state = 'CA' ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
+    state = 'CA' ###Update with your state abbreviation. Be sure to use all CAPS, e.g. RI
+    cvs_url = f"https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{state.lower()}.json?vaccineinfo"
+    header = "https://www.cvs.com/immunizations/covid-19-vaccine"
 
-        ###Update with your cities nearby
-        cities = ['ALAMEDA', 'ALBANY', 'BERKELEY', 'CHICO', 'COLMA', 'DALY CITY', 'DAVIS', 'DANVILLE', 'DIXON', 'EL CERRITO', 'FAIRFIELD', 'SAN FRANCISCO', 'OAKLAND', 'WOODLAND', 'SACRAMENTO']
+    ###Update with your cities nearby
+    cities = ['ALAMEDA', 'ALAMO', 'ALBANY', 'ANTIOCH', 'BERKELEY', 'CHICO', 'COLMA', 'CUPERTINO', 'DALY CITY', 'DAVIS',
+    'EAST PALO ALTO', 'HAYWARD', 'LAFAYETTE', 'LATHROP', 'LIVERMORE', 'LOS GATOS', 'DANVILLE', 'DIXON', 'DUBLIN', 'EL CERRITO',
+    'ELK GROVE', 'EMERYVILLE' 'FAIRFIELD', 'FREMONT', 'MENLO PARK', 'SAN FRANCISCO', 'OAKLAND', 'WOODLAND', 'SACRAMENTO',
+    'STOCKTON', 'VACAVILLE', 'VALLEJO', 'WALNUT CREEK', 'MILL VALLEY', 'MORAGA', 'NEWARK', 'NOVATO', 'ORINDA', 'PITTSBURG',
+    'PINOLE', 'PLEASANT HILL', 'REDWOOD CITY', 'RICHMOND', 'SAN ANSELMO', 'SAN BRUNO', 'SAN CARLOS', 'SAN LEANDRO', 'SAN MATEO',
+    'SAN RAFAEL', 'SAN RAMON', 'SAUSALITO', 'SARATOGA'
+    ]
 
+    previousmessage = []
+
+    while datetime.now() < max_time:
+
+        thetime = datetime.now()
         message = []
 
-        response = requests.get(f"https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{state.lower()}.json?vaccineinfo", headers={"Referer":"https://www.cvs.com/immunizations/covid-19-vaccine"})
+        response = requests.get(cvs_url, headers={"Referer":header})
         payload = response.json()
 
-        thetime = time.ctime()
-        print(thetime)
-        message.append(thetime)
+        print(thetime)    
 
         for item in payload["responsePayloadData"]["data"][state]:
 
             city = item.get('city')
             status = item.get('status')
 
-            if (city in cities) and (status != 'Fully Booked'):
+            if (city in cities) and (status == 'Available'):
                 message.append(f"{city}, {state} -- {status}")
                 print(f"{city}, {state} -- {status}")
 
-        print('\n')
-        send(message, state)
-        time.sleep(3600) ##This runs every 1 hour (in seconds). Update here if you'd like it to go every 10min (600sec)
+        print()
 
-findAVaccine() ###this final line runs the function. Your terminal will output the cities every 60seconds
+        # Decouple the checking to sending alerts
+        # if no change for an hour, just send a message that there's no change
+        if (message != previousmessage) or ((thetime - init_time).total_seconds() > timer):
+            # set previous to this new one
+            previousmessage = message[:]
+            # reset the timer
+            init_time = datetime.now()
+            # send the email!
+            send(message, thetime, state)
+        
+        # This runs every 300 seconds (5 minutes)
+        # Email will be sent every hour, or when a change is detected
+        time.sleep(300)
+
+if __name__ == '__main__':
+    try:
+        findAVaccine()
+    except KeyboardInterrupt:
+        print('Exiting...')
