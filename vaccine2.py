@@ -113,7 +113,7 @@ def findAVaccine():
         # to track changes to a file using Path('config.json').stats().ts_mtime
         # and reload only if there's a change in the file
         d = get_cdata()
-        if cdata['modified']:
+        if d['modified']:
             print('Oh, hey, new config... applying.')
             d['modified'] = False
             cdata = d
@@ -121,7 +121,6 @@ def findAVaccine():
             with open("config.json", "w") as outfile:
                 json.dump(d, outfile)
             # Go on
-            max_time = init_time + timedelta(hours=cdata['timers']['hours_to_run'])
             timer = cdata['timers']['timer']
             hours_to_run = cdata['timers']['hours_to_run']
             max_time = init_time + timedelta(hours=hours_to_run)
