@@ -12,9 +12,9 @@ cities you specify.
 
 import argparse
 import time
-
 import beepy
 import requests
+import webbrowser
 
 CVS_URL = "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
 REFERER_URL = "https://www.cvs.com/immunizations/covid-19-vaccine"
@@ -41,6 +41,11 @@ def main():  # noqa: D103
                         nargs='+',
                         help="Full names of cities to search, separated by whitespace",
                         required=True)
+    parser.add_argument("--openurl",
+                        help="Add this switch to open your browser automatically",
+                        action='store_true',
+                        default=False,
+                        required=False)
 
     # parse given command line arguments
     args = parser.parse_args()
@@ -48,6 +53,7 @@ def main():  # noqa: D103
     max_time = time.time() + args.total_hours * 60 * 60
     state_url = CVS_URL.format(args.state.lower())
     chosen_cities = [city.upper() for city in args.cities]
+    open_url = args.openurl
 
     # run for `args.total` hours or until Ctrl-C is pressed
     while time.time() < max_time:
@@ -71,6 +77,8 @@ def main():  # noqa: D103
                 print(city, status)
                 if status != 'Fully Booked':
                     beepy.beep(sound='coin')
+                    if open_url:
+                        webbrowser.open(REFERER_URL)
                     break
 
             # sleep for the given number of minutes
