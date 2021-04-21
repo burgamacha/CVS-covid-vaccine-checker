@@ -37,13 +37,20 @@ def main():  # noqa: D103
     parser.add_argument("--state",
                         help="State to search, e.g., NJ",
                         required=True)
-    parser.add_argument("--cities",
-                        nargs='+',
-                        help="Full names of cities to search, separated by whitespace",
-                        required=True)
+    citygroup = parser.add_mutually_exclusive_group(required=True)
+    citygroup.add_argument("--cities",
+                            nargs='+',
+                            help="Full names of cities to search, separated by whitespace. "
+                           "Quote multiword cities like 'Falls Church'.")
+    citygroup.add_argument("--cityfile",
+                           help="Filename with cities, one per line.",
+                           type=argparse.FileType('r'))
+
 
     # parse given command line arguments
     args = parser.parse_args()
+    if args.cityfile:
+        args.cities = [x.strip() for x in args.cityfile.readlines()]
 
     max_time = time.time() + args.total_hours * 60 * 60
     state_url = CVS_URL.format(args.state.lower())

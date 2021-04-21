@@ -28,16 +28,24 @@ This should be easy enough for someone comfortable with technology. Ask for help
 Run the script with your chosen state and list of cities. For example, to search for appointments in NJ in the cities of Princeton and Plainsboro, run
 
 ```bash
-python vaccine.py python vaccine.py --state NJ --cities princeton plainsboro
+python vaccine.py --state NJ --cities princeton plainsboro "Belle Mead"
 ```
 
 You will see output like this:
 
 ```
 Tue Mar 30 12:43:37 2021
+BELLE MEAD Fully Booked
 PLAINSBORO Fully Booked
 PRINCETON Fully Booked
 ```
+
+Alternatively, you can put the cities in a text file, one per line, and use:
+```bash
+python vaccine.py --state NJ --cityfile cities.txt
+```
+
+To find the list of cities, select your state at [CVS immunizations](https://www.cvs.com/immunizations/covid-19-vaccine).
 
 By default, the script will check for appointments every minute and run for a total of 3 hours after which it will exit. To change these values, you can use specify `--total` and `--refresh` options respectively. Run `python vaccine.py --help` for details.
 
