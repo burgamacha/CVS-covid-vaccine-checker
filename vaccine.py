@@ -16,13 +16,14 @@ import time
 import beepy
 import requests
 
-CVS_URL = "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
-REFERER_URL = "https://www.cvs.com/immunizations/covid-19-vaccine"
+URL = "https://www.cvs.com"
+REFERER_URL = f"{URL}/immunizations/covid-19-vaccine"
+CVS_URL = f"{REFERER_URL}.vaccine-status.{{}}.json?vaccineinfo"
+CVS_BOOKING_URL = f"{URL}/vaccine/intake/store/covid-screener/covid-qns"  # For display only
 
 
-def main():  # noqa: D103
-
-    # set up an argument parser
+def get_args() -> dict:
+    """Set up and return an argument parser."""
     parser = argparse.ArgumentParser(prog='vaccine.py')
     parser.add_argument("--total",
                         dest="total_hours",
@@ -37,6 +38,8 @@ def main():  # noqa: D103
     parser.add_argument("--state",
                         help="State to search, e.g., NJ",
                         required=True)
+
+    # For now, require one of these. But if none given, we could just show all.
     citygroup = parser.add_mutually_exclusive_group(required=True)
     citygroup.add_argument("--cities",
                             nargs='+',
@@ -46,12 +49,15 @@ def main():  # noqa: D103
                            help="Filename with cities, one per line.",
                            type=argparse.FileType('r'))
 
-
     # parse given command line arguments
     args = parser.parse_args()
     if args.cityfile:
         args.cities = [x.strip() for x in args.cityfile.readlines()]
 
+    return args
+
+def main():  # noqa: D103
+    args = get_args()
     max_time = time.time() + args.total_hours * 60 * 60
     state_url = CVS_URL.format(args.state.lower())
     chosen_cities = [city.upper() for city in args.cities]
@@ -62,23 +68,27 @@ def main():  # noqa: D103
         try:
             # get the latest response from CVS website
             response = requests.get(state_url, headers={"Referer": REFERER_URL})
+            response.raise_for_status()
             payload = response.json()
 
             # save the status for the chosen cities in a dictionary
-            statusdict = {}
-            for item in payload["responsePayloadData"]["data"][args.state]:
-                city, status = item['city'], item['status']
-                if city in chosen_cities:
-                    statusdict[city] = status
+            statusdict = {item['city']: item['status']
+                          for item in payload["responsePayloadData"]["data"][args.state]}
 
             # print out the values in the dictionary and make a sound to alert
             # the user if any of the chosen cities have appointments available
             print(time.ctime())
+            AVAILABLE = False        # Becomes true if any are avail.
             for city, status in statusdict.items():
-                print(city, status)
-                if status != 'Fully Booked':
+                if city not in chosen_cities:
+                    continue
+                print(f"{city:>25}: {status.replace('Available', '**AVAILABLE**')}")
+                if status != 'Fully Booked' and not AVAILABLE:
                     beepy.beep(sound='coin')
-                    break
+                    AVAILABLE = True
+
+            if AVAILABLE:
+                print(f'Booking site: {CVS_BOOKING_URL}')
 
             # sleep for the given number of minutes
             # before refreshing again
