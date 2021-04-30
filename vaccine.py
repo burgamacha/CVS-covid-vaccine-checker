@@ -12,8 +12,12 @@ cities you specify.
 
 import argparse
 import time
+try:
+    import beepy
+    BEEPY_AVAILABLE = True
+except:
+    BEEPY_AVAILABLE = False
 
-import beepy
 import requests
 
 CVS_URL = "https://www.cvs.com/immunizations/covid-19-vaccine.vaccine-status.{}.json?vaccineinfo"
@@ -70,7 +74,8 @@ def main():  # noqa: D103
             for city, status in statusdict.items():
                 print(city, status)
                 if status != 'Fully Booked':
-                    beepy.beep(sound='coin')
+                    if BEEPY_AVAILABLE:
+                        beepy.beep(sound='coin')
                     break
 
             # sleep for the given number of minutes
